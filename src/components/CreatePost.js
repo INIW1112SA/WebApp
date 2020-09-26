@@ -1,15 +1,18 @@
-import React, { useState } from "react"
-import Page from "./Page"
+import React, { useState, useContext } from "react"
 import Axios from "axios"
 import { withRouter } from "react-router-dom"
+
+import Page from "./Page"
+import ExampleContext from "../ExampleContext"
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
+  const { addFlashMessage } = useContext(ExampleContext)
   async function handleSubmit(e) {
     e.preventDefault()
     try {
       const response = await Axios.post("http://localhost:8080/create-post", { title, body, token: localStorage.getItem("webAppToken") })
-      props.addFlashMessage("Post is created successfully")
+      addFlashMessage("Post is created successfully")
       props.history.push(`/post/${response.data}`)
     } catch (e) {
       console.log("error")

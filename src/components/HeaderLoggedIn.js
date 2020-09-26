@@ -1,9 +1,11 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Link } from "react-router-dom"
+import ExampleContext from "../ExampleContext"
 
-function HeaderLoggedIn(props) {
+function HeaderLoggedIn() {
+  const { setLoggedIn } = useContext(ExampleContext)
   function handleLogout() {
-    props.setLoggedIn(false)
+    setLoggedIn(false)
     localStorage.removeItem("webAppusername")
     localStorage.removeItem("webAppToken")
     localStorage.removeItem("webAppAvatar")
