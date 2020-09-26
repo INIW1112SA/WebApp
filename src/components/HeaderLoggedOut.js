@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react"
 import Axios from "axios"
-import ExampleContext from "../ExampleContext"
+import DispatchContext from "../DispatchContext"
 
 function HeaderLoggedOut(props) {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
-  const { setLoggedIn } = useContext(ExampleContext)
+  const appDispatch = useContext(DispatchContext)
   async function handleSubmit(e) {
     e.preventDefault()
     try {
@@ -19,7 +19,7 @@ function HeaderLoggedOut(props) {
         localStorage.setItem("webAppToken", response.data.token)
         localStorage.setItem("webAppAvatar", response.data.avatar)
 
-        setLoggedIn(true)
+        appDispatch({ type: "login" })
       }
     } catch (e) {
       console.log(e)

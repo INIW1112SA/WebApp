@@ -11,7 +11,8 @@ import Home from "./components/Home"
 import CreatePost from "./components/CreatePost"
 import SinglePost from "./components/SinglePost"
 import FlashMessages from "./components/FlashMessages"
-import ExampleContext from "./ExampleContext"
+import StateContext from "./StateContext"
+import DispatchContext from "./DispatchContext"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 function App() {
@@ -40,38 +41,35 @@ function App() {
   }
 
   const [state, dispatch] = useReducer(ourReducer, initialState)
-  const [loggedIn, setLoggedIn] = useState()
-  const [flashMessages, setFlashMessages] = useState([])
 
-  function addFlashMessage(msg) {
-    setFlashMessages((prev) => prev.concat(msg))
-  }
   return (
-    <ExampleContext.Provider value={{ addFlashMessage, setLoggedIn }}>
-      <BrowserRouter>
-        <Header loggedIn={loggedIn} />
-        <FlashMessages messages={flashMessages} />
-        <Switch>
-          <Route exact path="/">
-            {loggedIn ? <Home /> : <HomeGuest />}
-          </Route>
-          <Route path="/post/:id">
-            <SinglePost />
-          </Route>
-          <Route path="/about-us">
-            <About />
-          </Route>
-          <Route path="/terms">
-            <Terms />
-          </Route>
-          <Route path="/create-post">
-            <CreatePost />
-          </Route>
-        </Switch>
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        <BrowserRouter>
+          <Header />
+          <FlashMessages messages={state.flashMessages} />
+          <Switch>
+            <Route exact path="/">
+              {state.loggedIn ? <Home /> : <HomeGuest />}
+            </Route>
+            <Route path="/post/:id">
+              <SinglePost />
+            </Route>
+            <Route path="/about-us">
+              <About />
+            </Route>
+            <Route path="/terms">
+              <Terms />
+            </Route>
+            <Route path="/create-post">
+              <CreatePost />
+            </Route>
+          </Switch>
 
-        <Footer />
-      </BrowserRouter>
-    </ExampleContext.Provider>
+          <Footer />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
   )
 }
 
