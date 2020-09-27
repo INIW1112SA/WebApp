@@ -4,14 +4,18 @@ import { withRouter } from "react-router-dom"
 
 import Page from "./Page"
 import DispatchContext from "../DispatchContext"
+import StateContext from "../StateContext"
+
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
+
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post("http://localhost:8080/create-post", { title, body, token: localStorage.getItem("webAppToken") })
+      const response = await Axios.post("http://localhost:8080/create-post", { title, body, token: appState.user.token })
       appDispatch({ type: "flashMessage", value: "Successfully created the post." })
       props.history.push(`/post/${response.data}`)
     } catch (e) {

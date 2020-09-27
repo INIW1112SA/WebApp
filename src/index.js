@@ -1,7 +1,8 @@
-import React, { useState, useReducer } from "react"
+import React, { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
 import Axios from "axios"
+import { useImmerReducer } from "use-immer"
 import Header from "./components/Header"
 import HomeGuest from "./components/HomeGuest"
 import Footer from "./components/Footer"
@@ -19,29 +20,38 @@ function App() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("webAppToken")),
     flashMessages: [],
+    user: {
+      token: localStorage.getItem("webAppToken"),
+      username: localStorage.getItem("webAppusername"),
+      avatar: localStorage.getItem("webAppAvatar"),
+    },
   }
-  function ourReducer(state, action) {
+  function ourReducer(draft, action) {
     switch (action.type) {
       case "login":
-        return {
-          loggedIn: true,
-          flashMessages: state.flashMessages,
-        }
+        draft.loggedIn = true
+        draft.user = action.data
+        return
       case "logout":
-        return {
-          loggedIn: false,
-          flashMessages: state.flashMessages,
-        }
+        draft.loggedIn = false
+        return
       case "flashMessage":
-        return {
-          loggedIn: state.loggedIn,
-          flashMessages: state.flashMessages.concat(action.value),
-        }
+        draft.flashMessages.push(action.value)
     }
   }
 
-  const [state, dispatch] = useReducer(ourReducer, initialState)
-
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState)
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem("webAppusername", state.user.username)
+      localStorage.setItem("webAppToken", state.user.token)
+      localStorage.setItem("webAppAvatar", state.user.avatar)
+    } else {
+      localStorage.removeItem("webAppusername", state.user.username)
+      localStorage.removeItem("webAppToken", state.user.token)
+      localStorage.removeItem("webAppAvatar", state.user.avatar)
+    }
+  }, [state.loggedIn])
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>

@@ -15,11 +15,8 @@ function HeaderLoggedOut(props) {
       })
       if (response.data) {
         console.log("success" + response.data)
-        localStorage.setItem("webAppusername", response.data.username)
-        localStorage.setItem("webAppToken", response.data.token)
-        localStorage.setItem("webAppAvatar", response.data.avatar)
 
-        appDispatch({ type: "login" })
+        appDispatch({ type: "login", data: response.data })
       }
     } catch (e) {
       console.log(e)
